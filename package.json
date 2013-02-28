@@ -1,0 +1,44 @@
+{
+  "name": "transparent-circuit-breaker",
+  "version": "0.0.1",
+  "description": "Simple, removable proxies for JavaScript methods.",
+  "author": {
+    "name": "Tim Shadel",
+    "email": "timshadel@gmail.com",
+    "url": "http://timshadel.com/"
+  },
+  "homepage": "http://github.com/transparent/transparent/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/transparent/transparent.git"
+  },
+  "bugs": {
+    "url": "http://github.com/transparent/transparent/issues"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "main": "./lib/transparent-circuit-breaker",
+  "dependencies": {
+    "transparent": "0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1",
+    "should": "~1.2.2"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "keywords": [
+    "proxy",
+    "hijack",
+    "method",
+    "middleware"
+  ]
+}
