@@ -1,24 +1,22 @@
 # Transparent Circuit Breaker
 [http://github.com/transparentjs/transparent-circuit-breaker][self]
 
-Transparent Circuit Breaker helps you keep your app stable. When one of your app's [backing services][backing]—like your API server—starts to fail, the breaker automatically executes a fallback path instead of calling failing service. The breaker retries the service again after some time has passed, and if successful it will re-enable use of the service.
+Transparent Circuit Breaker helps you keep your app stable. When one of your app's [backing services][backing]—like your API server—starts to fail, the breaker automatically executes a fallback path instead of continuing to call that service. The next set of calls made to that service will immediately use the fallback routine. After a timeout, the breaker will retry the service again. If successful it will re-enable use of the service again, and if not it will set another retry timeout.
 
-*Tripping the breaker* like this alleviates the load on the failing service. giving it time to potentially recover—and selects a known approach for handling that failure within your application.
+Github employs this pattern when it takes too long for it to load your repo's file list, and it simply covers it up with a graphic like so: ![Github repo file list area replaced with image stating "Sorry, this tree took too long to generate."](doc/github-too-slow.png)
 
 [self]: http://github.com/transparentjs/transparent-circuit-breaker
 [backing]: http://www.12factor.net/backing-services
 
-## How it works
+## How to Use It
 
-Circuit breakers need to insert themselves into the middle of requests to external resources. Those resources may be accessed in vastly different ways, but this module provides the basic pattern for interacting with circuit breakers. It plays off the work by the [Netflix team][netflix] in this area, providing various kinds of fallback options which can be set for a given circuit breaker, as well as a  general approach for reporting circuit breaker status and setting default timespans for state transitions and error conditions.
+Add it to your app's dependencies, then choose an approach below.
 
-Circuit breakers for specific services (like PostgreSQL or MongoDB) or particular types of service access (like HTTP with standard response codes) are provided in separate modules conforming to this pattern in the style of PassportJS.
+```console
+# npm install --save transparent-circuit-breaker
+```
 
-[netflix]: http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html
-
-## Examples
-
-### Put Breakers on Every Method, Use Default Values
+### Put Breakers on Exported Methods, Use Default Values
 
 By far the easiest way to use circuit breakers, you get a client object which will wrap
 your real client and implement all the default approaches to resource failures.
@@ -124,3 +122,23 @@ exports.updateAPICall = function(newValue, done) {
   });
 };
 ```
+
+## Background
+
+Failing servers typically slow down, increase the rate at which they return errors, and eventually stop responding altogether. Right along with that failing server, your entire application may start to slow down, randomly display error pages, and eventually stop responding—even if that failing service is used by only a small portion of your app. Circuit breakers protect your application in the same way that the circuit breakers in a home protect its power system: they prevent failures in one area from causing failures everywhere in the system.
+
+*Tripping the breaker* like this alleviates the load on the failing service, giving it time to recover—and selects a known approach for handling that failure within your application.
+
+The circuit breaker pattern originates from [Michael Nygard][nygard]’s book _[Release It! Design and Deploy Production-Ready Software][release-it]_ and discussed in his _[Stability Patterns][stability]_.
+
+[release-it]: http://pragprog.com/book/mnee/release-it
+[stability]: http://www.slideshare.net/justindorfman/stability-patterns-presentation
+[nygard]: http://twitter.com/mtnygard
+
+### How it works
+
+Circuit breakers need to insert themselves into the middle of requests to external resources. Those resources may be accessed in vastly different ways, but this module provides the basic pattern for interacting with circuit breakers. It plays off the work by the [Netflix team][netflix] in this area, providing various kinds of fallback options which can be set for a given circuit breaker, as well as a  general approach for reporting circuit breaker status and setting default timespans for state transitions and error conditions.
+
+Circuit breakers for specific services (like PostgreSQL or MongoDB) or particular types of service access (like HTTP with standard response codes) are provided in separate modules conforming to this pattern in the style of PassportJS.
+
+[netflix]: http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html
